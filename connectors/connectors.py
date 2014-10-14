@@ -65,7 +65,7 @@ class MySqlConnector(Connector):
 
     # database = None
     user = 'root'
-    password = 'n9vkshuri2k'
+    password = 'qweasd'
     database = 'diploma'
 
     def connect(self):
@@ -78,8 +78,21 @@ class MySqlConnector(Connector):
 
         # self.
 
-    def bind(self, table, params):
-        query = "SELECT * FROM %s " % table
+    def _make_where_statement(self, **kwargs):
+        condition = ""
+        for key, value in kwargs.items():
+            condition += " %s = %s AND" % (key, value)
+
+        return "WHERE %s true" % condition
+
+
+    def bind(self, table, **kwargs):
+        
+        # print kwargs
+        where = self._make_where_statement(**kwargs)
+        # print where
+
+        query = "SELECT * FROM %s\n%s " % (table, where)
         cursor = self.connection.cursor()
         cursor.execute(query, ())
 

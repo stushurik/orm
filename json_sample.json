@@ -1,0 +1,40 @@
+{
+    "tables": [
+        {
+            "name": "table1",
+            "fields": [
+                {
+                    "name": "idtable1",
+                    "type": "int"
+                },
+                {
+                    "name": "int_field",
+                    "type": "int"
+                },
+                {
+                    "name": "char_field",
+                    "type": "char"
+                }
+            ]
+        },
+        {
+            "name": "tablen",
+            "fields": [
+                {
+                    "name": "idtablen",
+                    "type": "int"
+                },
+                {
+                    "name": "fk_field",
+                    "type": "fk",
+                    "reference": "table1.idtable1"
+                },
+                {
+                    "name": "fk_field2",
+                    "type": "fk",
+                    "reference": "table1.idtable1"
+                }
+            ]
+        }
+    ]
+}

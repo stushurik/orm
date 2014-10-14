@@ -72,7 +72,6 @@ class SourceSwitcher(object):
                     attrs[field['name']] \
                         = self._field_by_type(field['type'])(field['reference'])
                 else:
-                    # print field
                     attrs[field['name']] \
                         = self._field_by_type(field['type'])()
 
@@ -86,7 +85,5 @@ class SourceSwitcher(object):
             setattr(relation, model_name, NewRelation)
 
             relations.append(NewRelation)
-
-        print 'parsed'
 
         return relations
