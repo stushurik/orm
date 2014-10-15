@@ -5,7 +5,7 @@
             "fields": [
                 {
                     "name": "idtable1",
-                    "type": "int"
+                    "type": "pk"
                 },
                 {
                     "name": "int_field",
@@ -22,7 +22,7 @@
             "fields": [
                 {
                     "name": "idtablen",
-                    "type": "int"
+                    "type": "pk"
                 },
                 {
                     "name": "fk_field",

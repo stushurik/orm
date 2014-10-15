@@ -2,7 +2,7 @@ import json
 from cache.cache import Cache
 from connectors.connectors import Connector, MySqlConnector
 from data import relation
-from data.fields import IntegerField, DateField, CharField, ForeignKey
+from data.fields import IntegerField, DateField, CharField, ForeignKey, PrimaryKey
 from data.manager import DataManager
 from synchronization.manager import SynchronizationManager
 
@@ -46,6 +46,8 @@ class SourceSwitcher(object):
             return CharField
         elif field_type == 'fk':
             return ForeignKey
+        elif field_type == 'pk':
+            return PrimaryKey
         else:
             return None
 
@@ -70,10 +72,10 @@ class SourceSwitcher(object):
             for field in fields:
                 if field['type'] == 'fk':
                     attrs[field['name']] \
-                        = self._field_by_type(field['type'])(field['reference'])
+                        = self._field_by_type(field['type'])(field['name'], field['reference'])
                 else:
                     attrs[field['name']] \
-                        = self._field_by_type(field['type'])()
+                        = self._field_by_type(field['type'])(field['name'])
 
             attrs['__module__'] = relation.__name__
 

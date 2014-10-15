@@ -3,14 +3,16 @@ import relation
 
 class Field(object):
 
-    connector = None
     _data = None
     field_type = None
     iterator = None
+    name = None
+    # _current = None
 
-    def __init__(self):
+    def __init__(self, name):
         super(Field, self).__init__()
         self._data = []
+        self.name = name
         # self.field_type = field_type
 
     def __call__(self, *args, **kwargs):
@@ -20,28 +22,51 @@ class Field(object):
         return self.iterator
 
     def __setitem__(self, key, item):
-        self._data[key] = item
+        try:
+            self._data[key] = item
+        except IndexError:
+            self._data.append(item)
+        
+        # self.relation.update()
 
     def __getitem__(self, key):
-        return self._data[key] 
+        print dir(self)
+        return self._data[key]
+
+    # def __iter__(self):
+    #     if not self.iterator:
+    #         self.iterator = iter(self._data)                 # Get iterator object on iter
+    #     return self.iterator
+
+    # def __next__(self):                 # Return a square on each iteration
+    #     if self.value == self.stop:     # Also called by next built-in
+    #         raise StopIteration
+    #     self.value += 1
+    #     return self.value ** 2
 
 
 class IntegerField(Field):
 
-    def __init__(self):
-        super(IntegerField, self).__init__()
+    def __init__(self, name):
+        super(IntegerField, self).__init__(name)
         self.field_type = 'int'
+
+class PrimaryKey(Field):
+
+    def __init__(self, name):
+        super(PrimaryKey, self).__init__(name)
+        self.field_type = 'pk'
 
 
 class DateField(Field):
-    def __init__(self):
-        super(DateField, self).__init__()
+    def __init__(self, name):
+        super(DateField, self).__init__(name)
         self.field_type = 'date'
 
 
 class CharField(Field):
-    def __init__(self):
-        super(CharField, self).__init__()
+    def __init__(self, name):
+        super(CharField, self).__init__(name)
         self.field_type = 'char'
 
 
@@ -52,8 +77,8 @@ class ForeignKey(Field):
     fk_table = None
     fk_value = None
 
-    def __init__(self, reference):
-        super(ForeignKey, self).__init__()
+    def __init__(self, name, reference):
+        super(ForeignKey, self).__init__(name)
         self.field_type = 'fk'
         self.fk_table, self.fk_value = reference.split(".")
 
@@ -90,6 +115,7 @@ class ForeignKey(Field):
         #         print fk_relation_class
 
     def __setitem__(self, key, item):
+        super(ForeignKey, self).__setitem__(key, item)
         self._data[key] = item
 
     def __getitem__(self, key):
