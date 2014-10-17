@@ -79,25 +79,48 @@ class MySqlConnector(Connector):
     def _make_where_statement(self, **kwargs):
         condition = ""
         for key, value in kwargs.items():
-            print key, value
-            condition += " %s = %s AND" % (key, value)
+            if len(value) == 1:                
+                condition += " %s = '%s' AND" % (key, value[0])
+            else:
+                condition += " %s IN (%s) AND" % (key, ', '.join([ "'" + str(val) + "'" for val in value]) )
 
         return "WHERE %s true" % condition
 
 
     def bind(self, table, **kwargs):
-        
-        where = self._make_where_statement(**kwargs)
-        query = "SELECT * FROM %s\n%s " % (table, where)
 
-        cursor = self.connection.cursor()
-        cursor.execute(query, ())
+        kwargs_part = ''
+        key = table
 
-        data = iter(cursor.fetchall())
-        column_names = cursor.column_names
-        cursor.close()
+        for dict_key,value in kwargs.items():
+            kwargs_part += dict_key + '-' + str(value)
+
+        if kwargs_part: key = table + '-' + kwargs_part
+
+
+        if self.cache.retrieve(key):
+            print "from cache"
+            return self.cache.retrieve(key)
+        else:
+
+            print "from DB"
         
-        return column_names, data
+            where = self._make_where_statement(**kwargs)
+
+            print where
+
+            query = "SELECT * FROM %s\n%s " % (table, where)
+
+            cursor = self.connection.cursor()
+            cursor.execute(query, ())
+
+            data = iter(cursor.fetchall())
+            column_names = cursor.column_names
+            cursor.close()
+
+            self.cache.set(key, (column_names, data))
+            
+            return column_names, data
 
     def save(self, **kwargs):
 

@@ -3,12 +3,15 @@ __author__ = 'olexandr'
 
 class DataManager(object):
     # cache = None
-    # relations = []
+    relations = None
 
-    # def __init__(self, cache, relations):
-    #     super(DataManager, self).__init__()
-    #     self.cache = cache
-    #     self.relations = relations
+    def __init__(self, relations):
+        super(DataManager, self).__init__()
+        self.relations = relations
+
+    def __getitem__(self, key):
+
+        return self.relations.get(key)
 
     def selection(self, relation, attributes):
         # self.cache.retrieve()

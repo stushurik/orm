@@ -1,6 +1,8 @@
 __author__ = 'olexandr'
 
 import sys
+from sets import Set
+
 
 from data.fields import Field
 
@@ -12,25 +14,70 @@ class Relation(object):
     connector = None
     column_names = None
 
+    __params = None
+    __filter_params = None
+
     def __init__(self, *args, **kwargs):        
 
         super(Relation, self).__init__()
         self.connector.connect()
-        self._bind(self.original_source_name, **kwargs)
+        self.__params = kwargs
+        self.__filter_params = []
+        
+        # self._bind(self.original_source_name, **kwargs)
 
         for attr in dir(self):
             obj = getattr(self, attr)
             if isinstance(obj, (Field)):
-                setattr(obj, "relation", self)     
+                setattr(obj, "relation", self)
+
+    def filter(self, **kwargs):
+        self.__filter_params.append(kwargs)
+
+        return self
+
+    def _clear_filter_params(self):
+        del self.__filter_params[:]
 
     def _bind(self, original_source_name, **kwargs):
 
-        column_names, g = self.connector.bind(original_source_name, **kwargs)
+        # print self.__params, self.__filter_params
+
+        self.__filter_params.append(self.__params.copy())
+
+        key_set = Set()
+        values = []
+
+        result_params = {}
+
+        for filters in self.__filter_params:
+            values.append(filters)
+            for key in filters.keys():
+                # print key
+                key_set.add(key)
+                
+        # print key_set
+
+        for key in key_set: 
+            # print key
+            for param_dict in values:
+
+                if not result_params.get(key) : result_params[key] = [param_dict.get(key)]
+                else: result_params[key].append(param_dict.get(key))
+
+        # print result_params
+
+        for key, value in result_params.items():
+            res = filter(None, value)
+            result_params[key] = res
+        # print result_params
+
+
+        column_names, g = self.connector.bind(original_source_name, **result_params)
 
         column_count = len(column_names)
 
         self.column_names = column_names
-        # print column_names, column_count
 
         try:
             for row in g:

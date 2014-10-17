@@ -16,6 +16,10 @@ class Field(object):
         # self.field_type = field_type
 
     def __call__(self, *args, **kwargs):
+
+        self.relation._bind(self.relation.original_source_name, **kwargs)
+        self.relation._clear_filter_params()
+
         if not self.iterator:
             self.iterator = iter(self._data)
 
@@ -29,8 +33,11 @@ class Field(object):
         
         # self.relation.update()
 
-    def __getitem__(self, key):
-        print dir(self)
+    def __getitem__(self, key, **kwargs):
+
+        self.relation._bind(self.relation.original_source_name, **kwargs)
+        self.relation._clear_filter_params()
+
         return self._data[key]
 
     # def __iter__(self):

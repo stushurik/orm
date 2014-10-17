@@ -29,10 +29,8 @@ class SourceSwitcher(object):
             MySqlConnector(self.synchronization_manager)
 
         self.synchronization_manager.connectors.append(connector)
-        self._parse_model(model, connector)
-
         # self.cache = Cache()
-        data_manager = DataManager()
+        data_manager = DataManager(self._parse_model(model, connector))
         self.data_managers.append(data_manager)
 
         return data_manager
@@ -53,7 +51,7 @@ class SourceSwitcher(object):
 
     def _parse_model(self, path, connector):
 
-        relations = []
+        relations = {}
 
         with open(path) as model_file:
             model = model_file.readlines()
@@ -86,6 +84,6 @@ class SourceSwitcher(object):
 
             setattr(relation, model_name, NewRelation)
 
-            relations.append(NewRelation)
+            relations[model_name] = NewRelation
 
         return relations

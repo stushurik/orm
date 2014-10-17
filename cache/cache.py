@@ -3,14 +3,17 @@ __author__ = 'olexandr'
 
 class Cache(object):
 
+    data = None
+
     def __init__(self):
         super(Cache, self).__init__()
+        self.data = {}
 
-    def invalidate(self):
-        pass
+    def invalidate(self, key):
+        self.data[key] = None
 
-    def retrieve(self):
-        pass
+    def retrieve(self, key):
+        return self.data.get(key)
 
-    def _set(self):
-        pass
+    def set(self, key, value):
+        self.data[key] = value
