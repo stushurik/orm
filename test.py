@@ -8,7 +8,7 @@ dm = sc.set_model('json_sample.json')
 
 # from data import relation
 
-tn = dm['Table1'](int_field=1).idtable1[0]
+tn = dm['Table1'](integer_field=1).idtable1[0]
 
 # tn = relation.Table1(int_field=1).filter(char_field="char2").idtable1[0]
 

@@ -2,7 +2,8 @@ import json
 from cache.cache import Cache
 from connectors.connectors import Connector, MySqlConnector
 from data import relation
-from data.fields import IntegerField, DateField, CharField, ForeignKey, PrimaryKey
+from data.fields import IntegerField, DateField, CharField, ForeignKey, \
+    PrimaryKey
 from data.manager import DataManager
 from synchronization.manager import SynchronizationManager
 
@@ -10,7 +11,6 @@ __author__ = 'olexandr'
 
 
 class SourceSwitcher(object):
-
     synchronization_manager = None
     cache = None
     data_managers = []
@@ -35,20 +35,6 @@ class SourceSwitcher(object):
 
         return data_manager
 
-    def _field_by_type(self, field_type):
-        if field_type == 'int':
-            return IntegerField
-        elif field_type == 'date':
-            return DateField
-        elif field_type == 'char':
-            return CharField
-        elif field_type == 'fk':
-            return ForeignKey
-        elif field_type == 'pk':
-            return PrimaryKey
-        else:
-            return None
-
     def _parse_model(self, path, connector):
 
         relations = {}
@@ -59,23 +45,8 @@ class SourceSwitcher(object):
         model_object = json.loads(''.join(model))
 
         for table in model_object['tables']:
-
-            fields = table['fields']
-            attrs = {
-
-                'connector': connector
-
-            }
-
-            for field in fields:
-                if field['type'] == 'fk':
-                    attrs[field['name']] \
-                        = self._field_by_type(field['type'])(field['name'], field['reference'])
-                else:
-                    attrs[field['name']] \
-                        = self._field_by_type(field['type'])(field['name'])
-
-            attrs['__module__'] = relation.__name__
+            attrs = {'connector': connector, 'fields': table['fields'],
+                     '__module__': relation.__name__}
 
             model_name = str(table['name']).capitalize()
             NewRelation = type(model_name, (relation.Relation,), attrs)

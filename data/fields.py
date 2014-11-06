@@ -1,6 +1,21 @@
 import relation
 
 
+def field_by_type(field_type):
+    if field_type == 'int':
+        return IntegerField
+    elif field_type == 'date':
+        return DateField
+    elif field_type == 'char':
+        return CharField
+    elif field_type == 'fk':
+        return ForeignKey
+    elif field_type == 'pk':
+        return PrimaryKey
+    else:
+        return None
+
+
 class Field(object):
 
     _data = None
@@ -8,11 +23,13 @@ class Field(object):
     iterator = None
     name = None
     # _current = None
+    relation = None
 
-    def __init__(self, name):
+    def __init__(self, name, relation):
         super(Field, self).__init__()
         self._data = []
         self.name = name
+        self.relation = relation
         # self.field_type = field_type
 
     def __call__(self, *args, **kwargs):
@@ -84,8 +101,8 @@ class ForeignKey(Field):
     fk_table = None
     fk_value = None
 
-    def __init__(self, name, reference):
-        super(ForeignKey, self).__init__(name)
+    def __init__(self, name, relation, reference):
+        super(ForeignKey, self).__init__(name, relation)
         self.field_type = 'fk'
         self.fk_table, self.fk_value = reference.split(".")
 

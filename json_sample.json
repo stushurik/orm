@@ -1,40 +1,20 @@
 {
-    "tables": [
-        {
-            "name": "table1",
-            "fields": [
-                {
-                    "name": "idtable1",
-                    "type": "pk"
-                },
-                {
-                    "name": "int_field",
-                    "type": "int"
-                },
-                {
-                    "name": "char_field",
-                    "type": "char"
-                }
-            ]
-        },
-        {
-            "name": "tablen",
-            "fields": [
-                {
-                    "name": "idtablen",
-                    "type": "pk"
-                },
-                {
-                    "name": "fk_field",
-                    "type": "fk",
-                    "reference": "table1.idtable1"
-                },
-                {
-                    "name": "fk_field2",
-                    "type": "fk",
-                    "reference": "table1.idtable1"
-                }
-            ]
-        }
-    ]
+  "tables":[
+    {
+      "name":"table1",
+      "fields":[
+          {"name":"idtable1", "type":"int"},
+          {"name":"char_field", "type":"char"},
+	  {"name":"integer_field", "type":"int"}
+      ]
+    },
+    {
+      "name":"tableN",
+      "fields":[
+          {"name":"idtableN", "type":"int"},
+          {"name":"fk_field", "type":"fk", "reference":"table1.idtable1"}
+      ]
+    }
+
+  ]
 }

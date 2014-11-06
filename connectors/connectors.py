@@ -65,7 +65,7 @@ class MySqlConnector(Connector):
 
     # database = None
     user = 'root'
-    password = 'qweasd'
+    password = 'n9vkshuri2k'
     database = 'diploma'
 
     def connect(self):
